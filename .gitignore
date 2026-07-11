@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.netlify/
+netlify.toml
+.server.pid
+*.pdf
+*.docx
+assets/
+site-deploy/
+vendor/
+docs/
+qa/**/*.png
+qa/redesign-audit/
+resume.html
+resume.css
+script.js
+styles.css
