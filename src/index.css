@@ -180,7 +180,7 @@ img { max-width: 100%; display: block; }
 .project-leaf .project-number { background: var(--leaf); color: var(--ink); }
 .project-leaf .project-subtitle { color: #526c25; }
 
-.workflow-section { padding: clamp(110px, 13vw, 180px) max(24px, calc((100vw - 1320px) / 2)); display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(54px, 8vw, 120px); color: var(--paper); background: var(--ink); }
+.workflow-section { padding: clamp(110px, 13vw, 180px) max(24px, calc((100vw - 1320px) / 2)); display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(54px, 8vw, 120px); overflow: clip; color: var(--paper); background: var(--ink); }
 .workflow-intro { position: sticky; top: 150px; align-self: start; }
 .workflow-intro .eyebrow { color: var(--sky); }
 .workflow-intro h2 { margin-top: 28px; color: var(--paper); font-size: clamp(42px, 5vw, 72px); }

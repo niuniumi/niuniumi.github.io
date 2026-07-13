@@ -31,6 +31,11 @@ assert.match(source, /aria-live="polite"/);
 assert.match(source, /prefers-reduced-motion/);
 assert.match(
   source,
+  /\.workflow-section\s*\{[^}]*overflow:\s*clip/s,
+  "offscreen workflow motion must not create horizontal page overflow",
+);
+assert.match(
+  source,
   /navigator\.clipboard\.writeText\(value\)/,
   "clipboard rejection must fall back to the legacy copy path",
 );
