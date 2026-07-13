@@ -1,45 +1,110 @@
-import { ArrowDownRight, ArrowUpRight, Sparkles } from "lucide-react";
-import { useRef } from "react";
+import { ArrowDownRight, CheckCircle, CursorClick, PaperPlaneTilt } from "@phosphor-icons/react";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { useState } from "react";
 import { heroCopy, profile } from "../content";
 
+const agentStages = [
+  { key: "理解", role: "Planner", detail: "拆解目标与约束" },
+  { key: "行动", role: "Coder", detail: "调用工具执行" },
+  { key: "校验", role: "Critic", detail: "检查结果并反馈" },
+];
+
 export function HeroPanel() {
-  const visualRef = useRef<HTMLDivElement>(null);
+  const [activeStage, setActiveStage] = useState(0);
+  const reducedMotion = useReducedMotion();
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const smoothX = useSpring(pointerX, { stiffness: 120, damping: 24 });
+  const smoothY = useSpring(pointerY, { stiffness: 120, damping: 24 });
+  const layerX = useTransform(smoothX, [-0.5, 0.5], reducedMotion ? [0, 0] : [-9, 9]);
+  const layerY = useTransform(smoothY, [-0.5, 0.5], reducedMotion ? [0, 0] : [-7, 7]);
+
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    visualRef.current?.style.setProperty("--pointer-x", `${x * 16}px`);
-    visualRef.current?.style.setProperty("--pointer-y", `${y * 16}px`);
-  };
-  const resetPointer = () => {
-    visualRef.current?.style.setProperty("--pointer-x", "0px");
-    visualRef.current?.style.setProperty("--pointer-y", "0px");
+    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5);
+    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5);
   };
 
   return (
     <section id="home" className="hero-section" aria-labelledby="hero-title">
-      <div className="hero-grid" aria-hidden="true" />
       <div className="hero-copy">
-        <p className="eyebrow"><Sparkles size={13} /> {heroCopy.eyebrow}</p>
-        <h1 id="hero-title">{heroCopy.titleA}<br /><span>{heroCopy.titleB}</span></h1>
+        <p className="eyebrow"><span className="status-dot" />{heroCopy.eyebrow}</p>
+        <motion.h1
+          id="hero-title"
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.56, ease: [0, 0, 0.2, 1] }}
+        >
+          让 AI 不只<br />回答问题，<br /><em>也真正参与创造。</em>
+        </motion.h1>
         <p className="hero-summary">{heroCopy.summary}</p>
         <div className="hero-actions">
-          <a className="button-primary" href="#work">查看作品 <ArrowDownRight size={18} /></a>
-          <a className="button-secondary" href={`mailto:${profile.email}`}>发起联系 <ArrowUpRight size={17} /></a>
+          <a className="button-primary" href="#work">看看我是怎么做的 <ArrowDownRight size={19} weight="bold" /></a>
+          <a className="button-text" href={`mailto:${profile.email}`}>直接联系我 <span aria-hidden="true">↗</span></a>
         </div>
-        <div className="hero-caption"><span>SCU · 2026</span><span>AI Agent / AI Applications</span></div>
+        <p className="hero-note"><CursorClick size={17} /> {heroCopy.note}</p>
       </div>
-      <div className="hero-visual-wrap" onPointerMove={handlePointerMove} onPointerLeave={resetPointer}>
-        <div className="hero-visual" ref={visualRef} aria-label="交互式 AI 工作流视觉">
-          <span className="visual-label label-one">PROMPT</span>
-          <span className="visual-label label-two">TEST</span>
-          <span className="visual-label label-three">SHIP</span>
-          <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
-          <div className="signal-core"><i /><b /><em /></div>
-          <div className="visual-chip chip-one">INPUT</div><div className="visual-chip chip-two">VERIFY</div>
-          <p className="visual-hint">move to explore</p>
+
+      <motion.div
+        className="workbench"
+        onPointerMove={handlePointerMove}
+        onPointerLeave={() => { pointerX.set(0); pointerY.set(0); }}
+        style={{ x: layerX, y: layerY }}
+        aria-label="AI Agent 协作流程演示"
+      >
+        <div className="workbench-bar">
+          <span><i /> WORKING LOG · 2026</span>
+          <span>v2.1 / HUMAN IN THE LOOP</span>
         </div>
-      </div>
+
+        <motion.article className="prompt-sheet" whileHover={reducedMotion ? undefined : { y: -5, rotate: -0.6 }}>
+          <div className="sheet-kicker"><PaperPlaneTilt size={16} /> Prompt 正在优化中…</div>
+          <p>目标：把一个模糊想法，整理成可以测试的产品原型。</p>
+          <ul>
+            <li>先确认使用场景与限制</li>
+            <li>再拆成模型可以执行的步骤</li>
+            <li>保留人工判断与验收节点</li>
+          </ul>
+          <strong>让 AI 先理解，再一起创造。</strong>
+        </motion.article>
+
+        <div className="agent-map">
+          <p className="map-title">AGENT 协作流程</p>
+          <div className="agent-nodes">
+            {agentStages.map((stage, index) => (
+              <button
+                key={stage.role}
+                type="button"
+                className={index === activeStage ? "agent-node is-active" : "agent-node"}
+                onClick={() => setActiveStage(index)}
+                aria-pressed={index === activeStage}
+              >
+                <span>{stage.role}</span>
+                <small>{stage.key}</small>
+              </button>
+            ))}
+          </div>
+          <div className="agent-connector" aria-hidden="true"><span /><span /></div>
+          <p className="map-caption">点击节点，查看一次协作如何向前推进。</p>
+        </div>
+
+        <div className="terminal-sheet">
+          <div className="terminal-top"><span>terminal / run.log</span><span className="terminal-lights" /></div>
+          <code aria-live="polite">
+            <span>$ agent run --stage {activeStage + 1}</span>
+            <span className="terminal-success">[ready] {agentStages[activeStage].role}</span>
+            <span>[task] {agentStages[activeStage].detail}</span>
+            <span className="terminal-success">[human] checkpoint retained ✓</span>
+          </code>
+        </div>
+
+        <motion.aside className="workbench-output" whileHover={reducedMotion ? undefined : { y: -7, rotate: -0.4 }}>
+          <img src="/assets/ashen-battle.png" alt="灰烬圣途战斗界面输出样本" />
+          <p><CheckCircle size={17} weight="fill" /><span><strong>PLAYTEST OUTPUT</strong>从 Agent 协作到真实可玩的结果。</span></p>
+        </motion.aside>
+      </motion.div>
+
+      <a className="scroll-cue" href="#work"><span>向下滚动</span><i /></a>
     </section>
   );
 }

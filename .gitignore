@@ -6,6 +6,8 @@ netlify.toml
 *.pdf
 *.docx
 assets/
+!public/assets/
+!public/assets/**
 site-deploy/
 vendor/
 docs/
