@@ -1,14 +1,14 @@
 import { GraduationCap, MapPin, Toolbox } from "@phosphor-icons/react";
 import { motion } from "motion/react";
-import { certificates, education, experience, profile, skills, strengths } from "../content";
+import { certificates, education, experience, profile, profileCopy, skills, strengths } from "../content";
 
 export function ProfileSection() {
   return (
     <section id="background" className="profile-section" aria-labelledby="background-title">
       <div className="profile-heading">
         <p className="eyebrow">BACKGROUND & CAPABILITY</p>
-        <h2 id="background-title">理工科训练，<br /><em>也可以很有创造力。</em></h2>
-        <p>光学和电子训练让我习惯从系统、信号与误差出发；AI 实践则让我不断练习如何把这些判断转化成更快的原型与表达。</p>
+        <h2 id="background-title">{profileCopy.titleLead}<br /><em>{profileCopy.titleEmphasis}</em></h2>
+        <p>{profileCopy.summary}</p>
       </div>
 
       <div className="profile-editorial">
@@ -17,7 +17,7 @@ export function ProfileSection() {
           <h3>{profile.name}</h3>
           <strong>{profile.role}</strong>
           <span><MapPin size={17} weight="fill" />四川 · 成都</span>
-          <div className="identity-statement">正在寻找 AI Agent、AI 应用、AI 产品助理、AI 工具链实践与 AI 运营方向的机会。</div>
+          <div className="identity-statement">{profileCopy.opportunity}</div>
           <div className="certificate-list">{certificates.map((item) => <span key={item}>{item}</span>)}</div>
         </motion.aside>
 
@@ -38,7 +38,7 @@ export function ProfileSection() {
           </article>
           <article className="tools-ledger">
             <p>TOOLS / NOT A CHECKLIST</p>
-            <h3>工具只有进入流程，才真正有用。</h3>
+            <h3>{profileCopy.toolsTitle}</h3>
             <div className="skill-groups">
               <div><span>AI</span>{skills.ai.map((item) => <b key={item}>{item}</b>)}</div>
               <div><span>WORKFLOW</span>{skills.workflow.map((item) => <b key={item}>{item}</b>)}</div>
@@ -49,7 +49,15 @@ export function ProfileSection() {
         </div>
       </div>
 
-      <div className="strengths-line">{strengths.map((item, index) => <span key={item}><small>0{index + 1}</small>{item}</span>)}</div>
+      <div className="strengths-line">
+        {strengths.map((item, index) => (
+          <span key={item.title}>
+            <small>0{index + 1}</small>
+            <strong>{item.title}</strong>
+            <em>{item.detail}</em>
+          </span>
+        ))}
+      </div>
     </section>
   );
 }

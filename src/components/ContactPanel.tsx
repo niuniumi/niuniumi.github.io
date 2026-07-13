@@ -1,6 +1,6 @@
 import { ArrowUpRight, CheckCircle, Copy, EnvelopeSimple, Phone } from "@phosphor-icons/react";
 import { useState } from "react";
-import { profile } from "../content";
+import { contactCopy, profile } from "../content";
 
 async function copyText(value: string): Promise<boolean> {
   if (navigator.clipboard?.writeText) {
@@ -44,7 +44,7 @@ export function ContactPanel() {
       <div className="contact-kicker"><span />AVAILABLE FOR OPPORTUNITIES · 2026</div>
       <div className="contact-content">
         <h2 id="contact-title">如果你也在想，<br />AI 还能<strong>做成什么。</strong></h2>
-        <p>欢迎从一个具体的问题聊起。我会带着真实作品、过程记录和清晰的能力边界，认真回应每一次合作与机会。</p>
+        <p>{contactCopy.summary}</p>
         <div className="contact-actions">
           <a href={`mailto:${profile.email}`}><EnvelopeSimple size={20} weight="bold" />写封邮件 <ArrowUpRight size={17} weight="bold" /></a>
           <button type="button" onClick={handleCopy} aria-label="复制邮箱">
